@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 /**
  *
@@ -65,6 +66,52 @@ public class Admin_Customer_Form extends javax.swing.JInternalFrame {
             model.addRow(row);
         }
     }
+    
+    public ArrayList<Patient_Model> searchList(String search){
+        ArrayList<Patient_Model> searchsList = new ArrayList<>();
+        try{
+            Class.forName("org.postgresql.Driver");
+        }catch (ClassNotFoundException ex){
+            ex.printStackTrace();
+        }
+        try{
+            Connection con = DriverManager.getConnection(url, unameDB, passDB);
+            String search_query = "select * from patient where full_name like " + search;
+            Statement stm = con.createStatement();
+            ResultSet rs = stm.executeQuery(search_query);
+            Patient_Model patients;
+            while(rs.next()){
+               patients = new Patient_Model(rs.getInt("id"), rs.getString("full_name"),rs.getString("address"),rs.getString("email"),rs.getString("phone_number"),rs.getString("gender"),rs.getInt("age"));
+               searchsList.add(patients);
+               }
+           } catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        return searchsList;
+    }
+    
+    public void show_searchPatients(){
+        String search = "'%" + tf_search.getText() + "%'";
+        ArrayList<Patient_Model> list = searchList(search);
+        DefaultTableModel model = (DefaultTableModel)customer_table.getModel();
+        Object[] row = new Object[7];
+        for(int i = 0; i < list.size();i++){
+            row[0] = list.get(i).getid();
+            row[1] = list.get(i).getfullname();
+            row[2] = list.get(i).getaddress();
+            row[3] = list.get(i).getemail();
+            row[4] = list.get(i).getphonenumber();
+            row[5] = list.get(i).getgender();
+            row[6] = list.get(i).getage();
+            model.addRow(row);
+        }
+    }
+    
+    // clear data in table 
+     public void clear_Patients(){
+        DefaultTableModel model = (DefaultTableModel)customer_table.getModel();
+        model.setRowCount(0);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -76,7 +123,7 @@ public class Admin_Customer_Form extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
+        tf_search = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         customer_table = new javax.swing.JTable();
@@ -89,10 +136,20 @@ public class Admin_Customer_Form extends javax.swing.JInternalFrame {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jTextField1.setText("Search...");
-        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 10, 267, 30));
+        tf_search.setText("Search...");
+        tf_search.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tf_searchFocusGained(evt);
+            }
+        });
+        jPanel1.add(tf_search, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 10, 267, 30));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/search.png"))); // NOI18N
+        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel1MouseClicked(evt);
+            }
+        });
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 10, 30, 30));
 
         customer_table.setModel(new javax.swing.table.DefaultTableModel(
@@ -121,12 +178,26 @@ public class Admin_Customer_Form extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
+        if(!tf_search.getText().equals("") && !tf_search.getText().equals("Search...")){
+           clear_Patients();
+           show_searchPatients(); 
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Please fill all search space");
+        }
+    }//GEN-LAST:event_jLabel1MouseClicked
+
+    private void tf_searchFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tf_searchFocusGained
+        tf_search.setText("");
+    }//GEN-LAST:event_tf_searchFocusGained
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable customer_table;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField tf_search;
     // End of variables declaration//GEN-END:variables
 }

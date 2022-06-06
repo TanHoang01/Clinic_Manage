@@ -3,20 +3,77 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
  */
 package Screens;
-
+import Model.*;
+import java.sql.Statement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author Tan Hoang-Pride
  */
 public class Staff_Patient_Form extends javax.swing.JInternalFrame {
-
+    static String url = "jdbc:postgresql://localhost:5432/clinic_manage";
+    static String unameDB = "postgres";
+    static String passDB = "123456";
+    static String query = "select * from patient";
     /**
      * Creates new form Staff_Patient_Form
      */
     public Staff_Patient_Form() {
         initComponents();
+        show_Patients();
     }
-
+    
+    public ArrayList<Patient_Model> patientList(){
+        ArrayList<Patient_Model> patientsList = new ArrayList<>();
+        try{
+            Class.forName("org.postgresql.Driver");
+        }catch (ClassNotFoundException ex){
+            ex.printStackTrace();
+        }
+        try{
+            Connection con = DriverManager.getConnection(url, unameDB, passDB);
+            Statement stm = con.createStatement();
+            ResultSet rs = stm.executeQuery(query);
+            Patient_Model patients;
+            while(rs.next()){
+               patients = new Patient_Model(rs.getInt("id"), rs.getString("full_name"),rs.getString("address"),rs.getString("email"),rs.getString("phone_number"),rs.getString("gender"),rs.getInt("age"));
+               patientsList.add(patients);
+               }
+           } catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        return patientsList;
+    }
+    
+    public void show_Patients(){
+        ArrayList<Patient_Model> list = patientList();
+        DefaultTableModel model = (DefaultTableModel)patient_table.getModel();
+        Object[] row = new Object[7];
+        for(int i = 0; i < list.size();i++){
+            row[0] = list.get(i).getid();
+            row[1] = list.get(i).getfullname();
+            row[2] = list.get(i).getaddress();
+            row[3] = list.get(i).getemail();
+            row[4] = list.get(i).getphonenumber();
+            row[5] = list.get(i).getgender();
+            row[6] = list.get(i).getage();
+            model.addRow(row);
+        }
+    }
+    
+    // clear data in table 
+     public void clear_Patients(){
+        DefaultTableModel model = (DefaultTableModel)patient_table.getModel();
+        model.setRowCount(0);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -28,22 +85,24 @@ public class Staff_Patient_Form extends javax.swing.JInternalFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField5 = new javax.swing.JTextField();
+        tf_address = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jTextField4 = new javax.swing.JTextField();
+        tf_age = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField6 = new javax.swing.JTextField();
+        tf_phonenumber = new javax.swing.JTextField();
+        tf_fullname = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        jTextField7 = new javax.swing.JTextField();
+        tf_email = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jTextField8 = new javax.swing.JTextField();
+        tf_gender = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        patient_table = new javax.swing.JTable();
+        bt_add = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        bt_remove = new javax.swing.JButton();
+        tf_id = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
 
         setClosable(true);
         setIconifiable(true);
@@ -53,105 +112,284 @@ public class Staff_Patient_Form extends javax.swing.JInternalFrame {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/user.png"))); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/id.png"))); // NOI18N
         jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 30, 40));
 
-        jTextField5.setText("Address");
-        jTextField5.setToolTipText("");
-        jPanel1.add(jTextField5, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 10, 210, -1));
+        tf_address.setText("Address");
+        tf_address.setToolTipText("");
+        tf_address.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tf_addressFocusGained(evt);
+            }
+        });
+        jPanel1.add(tf_address, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 10, 210, -1));
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/age.png"))); // NOI18N
         jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 40, 30, 40));
 
-        jTextField4.setText("Age");
-        jTextField4.setToolTipText("");
-        jPanel1.add(jTextField4, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 50, 210, -1));
+        tf_age.setText("Age");
+        tf_age.setToolTipText("");
+        tf_age.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tf_ageFocusGained(evt);
+            }
+        });
+        jPanel1.add(tf_age, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 50, 210, -1));
 
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/phone-call.png"))); // NOI18N
         jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 40, 30, 40));
 
-        jTextField1.setText("Phone Number");
-        jTextField1.setToolTipText("");
-        jPanel1.add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 50, 210, -1));
+        tf_phonenumber.setText("Phone Number");
+        tf_phonenumber.setToolTipText("");
+        tf_phonenumber.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tf_phonenumberFocusGained(evt);
+            }
+        });
+        jPanel1.add(tf_phonenumber, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 50, 210, -1));
 
-        jTextField6.setText("Full Name");
-        jTextField6.setToolTipText("");
-        jPanel1.add(jTextField6, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 210, -1));
+        tf_fullname.setText("Full Name");
+        tf_fullname.setToolTipText("");
+        tf_fullname.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tf_fullnameFocusGained(evt);
+            }
+        });
+        jPanel1.add(tf_fullname, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 50, 210, -1));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/location.png"))); // NOI18N
         jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 0, 30, 40));
 
-        jTextField7.setText("Email");
-        jTextField7.setToolTipText("");
-        jPanel1.add(jTextField7, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 50, 210, -1));
+        tf_email.setText("Email");
+        tf_email.setToolTipText("");
+        tf_email.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tf_emailFocusGained(evt);
+            }
+        });
+        jPanel1.add(tf_email, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, 210, -1));
 
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/envelope.png"))); // NOI18N
-        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 30, 40));
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 30, 40));
 
-        jTextField8.setText("Gender");
-        jTextField8.setToolTipText("");
-        jPanel1.add(jTextField8, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 10, 210, -1));
+        tf_gender.setText("Gender");
+        tf_gender.setToolTipText("");
+        tf_gender.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tf_genderFocusGained(evt);
+            }
+        });
+        jPanel1.add(tf_gender, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 10, 210, -1));
 
         jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/gender-fluid.png"))); // NOI18N
         jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 0, 30, 40));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        patient_table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Full Name", "Address", "Email", "Phone Number", "Gender", "Age"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(patient_table);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 850, 380));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 130, 840, 370));
 
-        jButton1.setText("jButton1");
-        jPanel1.add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 90, -1, -1));
+        bt_add.setText("ADD");
+        bt_add.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bt_addMouseClicked(evt);
+            }
+        });
+        jPanel1.add(bt_add, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 90, 80, -1));
 
-        jButton2.setText("jButton1");
-        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 90, -1, -1));
+        jButton2.setText("UPDATE");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
+        jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 90, -1, -1));
 
-        jButton3.setText("jButton1");
-        jPanel1.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(690, 90, -1, -1));
+        bt_remove.setText("REMOVE");
+        bt_remove.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bt_removeMouseClicked(evt);
+            }
+        });
+        jPanel1.add(bt_remove, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 90, -1, -1));
+
+        tf_id.setText("ID");
+        tf_id.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tf_idFocusGained(evt);
+            }
+        });
+        jPanel1.add(tf_id, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 210, -1));
+
+        jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/user.png"))); // NOI18N
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 30, 40));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 868, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 526, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 9, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void bt_addMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bt_addMouseClicked
+         //make sure all textfield is filled
+        if((!tf_fullname.getText().equals("")) && (!tf_phonenumber.getText().equals("")) && (!tf_address.getText().equals("")) && (!tf_id.getText().equals("")) 
+            && (!tf_email.getText().equals("")) && (!tf_gender.getText().equals("")) && (!tf_age.getText().equals("")) && (!tf_fullname.getText().equals("Full Name")) 
+            && (!tf_phonenumber.getText().equals("Phone Number")) && (!tf_address.getText().equals("Address")) 
+            && (!tf_id.getText().equals("ID"))  && (!tf_email.getText().equals("Email")) && (!tf_gender.getText().equals("Gender")) && (!tf_age.getText().equals("Age"))){
+            try{
+                Class.forName("org.postgresql.Driver");
+            }catch (ClassNotFoundException ex){
+                ex.printStackTrace();
+            }
+            try{
+                Connection con = DriverManager.getConnection(url, unameDB, passDB);             
+                // Add new patient query
+                String patient_query = "INSERT INTO public.patient(\n" +"	id, full_name, address, email, phone_number, gender, age)\n" +"	VALUES (?, ?, ?, ?, ?, ?, ?);";
+                PreparedStatement patient_pst = con.prepareStatement(patient_query);
+                patient_pst.setInt(1, Integer.valueOf(tf_id.getText()));
+                patient_pst.setString(2, tf_fullname.getText());
+                patient_pst.setString(3, tf_address.getText());
+                patient_pst.setString(4, tf_email.getText());
+                patient_pst.setString(5, tf_phonenumber.getText());
+                patient_pst.setString(6, tf_gender.getText());
+                patient_pst.setInt(7, Integer.valueOf(tf_age.getText()));
+                patient_pst.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Add Patient Successfully");
+            }catch(SQLException ex){
+                JOptionPane.showMessageDialog(null, "Error Something Go Wrong");
+            }
+            clear_Patients();
+            show_Patients();
+        }else{
+            JOptionPane.showMessageDialog(null, "Please fill all blank space");
+        }
+    }//GEN-LAST:event_bt_addMouseClicked
+
+    private void tf_idFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tf_idFocusGained
+        tf_id.setText("");
+    }//GEN-LAST:event_tf_idFocusGained
+
+    private void tf_fullnameFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tf_fullnameFocusGained
+        tf_fullname.setText("");
+    }//GEN-LAST:event_tf_fullnameFocusGained
+
+    private void tf_emailFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tf_emailFocusGained
+        tf_email.setText("");
+    }//GEN-LAST:event_tf_emailFocusGained
+
+    private void tf_addressFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tf_addressFocusGained
+        tf_address.setText("");
+    }//GEN-LAST:event_tf_addressFocusGained
+
+    private void tf_phonenumberFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tf_phonenumberFocusGained
+        tf_phonenumber.setText("");
+    }//GEN-LAST:event_tf_phonenumberFocusGained
+
+    private void tf_genderFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tf_genderFocusGained
+        tf_gender.setText("");
+    }//GEN-LAST:event_tf_genderFocusGained
+
+    private void tf_ageFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tf_ageFocusGained
+        tf_age.setText("");
+    }//GEN-LAST:event_tf_ageFocusGained
+
+    private void bt_removeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bt_removeMouseClicked
+        //get selected row 
+        int selected = patient_table.getSelectedRow();
+        int dialogResult = JOptionPane.showConfirmDialog (null, "Would You Like to delete this patient?","Warning",JOptionPane.YES_NO_OPTION);
+        if(dialogResult == JOptionPane.YES_OPTION){
+            try{
+                Class.forName("org.postgresql.Driver");
+            }catch (ClassNotFoundException ex){
+                ex.printStackTrace();
+            }
+            try{
+                    Connection con = DriverManager.getConnection(url, unameDB, passDB);
+                    // delete employee query
+                    String patient_query ="DELETE FROM public.patient\n" +"	WHERE id = ?;";
+                    PreparedStatement patient_pst = con.prepareStatement(patient_query);
+                    patient_pst.setInt(1, Integer.valueOf(patient_table.getValueAt(selected, 0).toString()));
+                    patient_pst.executeUpdate();
+                    JOptionPane.showMessageDialog(null, "Delete Patient Successfully");
+            }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(null, "Error Something Go Wrong");
+                }
+                clear_Patients();
+                show_Patients();
+        }else{
+            
+        }
+    }//GEN-LAST:event_bt_removeMouseClicked
+
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        //get selected row 
+        int selected = patient_table.getSelectedRow();
+         try{
+                Class.forName("org.postgresql.Driver");
+            }catch (ClassNotFoundException ex){
+                ex.printStackTrace();
+            }
+            try{
+                    Connection con = DriverManager.getConnection(url, unameDB, passDB);             
+                    // update account query
+                    String patient_query ="UPDATE public.patient\n" +"	SET id=?, full_name=?, address=?, email=?, phone_number=?, gender=?, age=?\n" +"	WHERE id = ?;";
+                    PreparedStatement patient_pst = con.prepareStatement(patient_query);
+                    patient_pst.setInt(1, Integer.valueOf(patient_table.getValueAt(selected, 0).toString()));
+                    patient_pst.setString(2, patient_table.getValueAt(selected, 1).toString());
+                    patient_pst.setString(3,patient_table.getValueAt(selected, 2).toString());
+                    patient_pst.setString(4, patient_table.getValueAt(selected, 3).toString());
+                    patient_pst.setString(5, patient_table.getValueAt(selected, 4).toString());
+                    patient_pst.setString(6, patient_table.getValueAt(selected, 5).toString());
+                    patient_pst.setInt(7, Integer.valueOf(patient_table.getValueAt(selected, 6).toString()));
+                    patient_pst.setInt(8, Integer.valueOf(patient_table.getValueAt(selected, 0).toString()));
+                    patient_pst.executeUpdate();              
+                    JOptionPane.showMessageDialog(null, "Update Patient Successfully");
+            }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(null, "Error Something Go Wrong");
+                    ex.printStackTrace();
+                }
+                clear_Patients();
+                show_Patients();
+    }//GEN-LAST:event_jButton2MouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton bt_add;
+    private javax.swing.JButton bt_remove;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
-    private javax.swing.JTextField jTextField6;
-    private javax.swing.JTextField jTextField7;
-    private javax.swing.JTextField jTextField8;
+    private javax.swing.JTable patient_table;
+    private javax.swing.JTextField tf_address;
+    private javax.swing.JTextField tf_age;
+    private javax.swing.JTextField tf_email;
+    private javax.swing.JTextField tf_fullname;
+    private javax.swing.JTextField tf_gender;
+    private javax.swing.JTextField tf_id;
+    private javax.swing.JTextField tf_phonenumber;
     // End of variables declaration//GEN-END:variables
 }

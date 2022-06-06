@@ -91,7 +91,7 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         tf_fullname = new javax.swing.JTextField();
-        tf_email = new javax.swing.JTextField();
+        tf_phonenumber = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         tf_password = new javax.swing.JTextField();
@@ -103,12 +103,14 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         employee_table = new javax.swing.JTable();
         jLabel7 = new javax.swing.JLabel();
-        tf_phonenumber = new javax.swing.JTextField();
+        tf_id = new javax.swing.JTextField();
         tf_address = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         tf_username = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        tf_email = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
 
         setClosable(true);
         setIconifiable(true);
@@ -119,10 +121,10 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/user.png"))); // NOI18N
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 0, 30, 40));
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 40, 30, 40));
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/envelope.png"))); // NOI18N
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 30, 40));
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 30, 40));
 
         tf_fullname.setText("Full Name");
         tf_fullname.setToolTipText("");
@@ -131,19 +133,19 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
                 tf_fullnameFocusGained(evt);
             }
         });
-        jPanel1.add(tf_fullname, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 210, -1));
+        jPanel1.add(tf_fullname, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 50, 210, -1));
 
-        tf_email.setText("Email");
-        tf_email.setToolTipText("");
-        tf_email.addFocusListener(new java.awt.event.FocusAdapter() {
+        tf_phonenumber.setText("Phone Number");
+        tf_phonenumber.setToolTipText("");
+        tf_phonenumber.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                tf_emailFocusGained(evt);
+                tf_phonenumberFocusGained(evt);
             }
         });
-        jPanel1.add(tf_email, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 50, 210, -1));
+        jPanel1.add(tf_phonenumber, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 10, 210, -1));
 
         jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/phone-call.png"))); // NOI18N
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 80, 30, 40));
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 0, 30, 40));
 
         jLabel6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/revenue.png"))); // NOI18N
         jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 80, 40, 40));
@@ -155,7 +157,7 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
                 tf_passwordFocusGained(evt);
             }
         });
-        jPanel1.add(tf_password, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 50, 210, -1));
+        jPanel1.add(tf_password, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 90, 210, -1));
 
         cbb_typeofjob.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Doctor", "Pharmacist", "Staff", " " }));
         jPanel1.add(cbb_typeofjob, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 50, 210, -1));
@@ -176,7 +178,7 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
                 bt_addMouseClicked(evt);
             }
         });
-        jPanel1.add(bt_add, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 90, 90, -1));
+        jPanel1.add(bt_add, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 130, 90, -1));
 
         bt_remove.setBackground(new java.awt.Color(255, 255, 255));
         bt_remove.setText("REMOVE");
@@ -185,7 +187,7 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
                 bt_removeMouseClicked(evt);
             }
         });
-        jPanel1.add(bt_remove, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 90, 90, -1));
+        jPanel1.add(bt_remove, new org.netbeans.lib.awtextra.AbsoluteConstraints(660, 130, 90, -1));
 
         bt_update.setBackground(new java.awt.Color(255, 255, 255));
         bt_update.setText("UPDATE");
@@ -194,7 +196,7 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
                 bt_updateMouseClicked(evt);
             }
         });
-        jPanel1.add(bt_update, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 90, 90, -1));
+        jPanel1.add(bt_update, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 130, 90, -1));
 
         employee_table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -206,19 +208,19 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
         ));
         jScrollPane1.setViewportView(employee_table);
 
-        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 850, 400));
+        jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 160, 850, 350));
 
         jLabel7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/role.png"))); // NOI18N
         jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 40, 30, 40));
 
-        tf_phonenumber.setText("Phone Number");
-        tf_phonenumber.setToolTipText("");
-        tf_phonenumber.addFocusListener(new java.awt.event.FocusAdapter() {
+        tf_id.setText("ID");
+        tf_id.setToolTipText("");
+        tf_id.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                tf_phonenumberFocusGained(evt);
+                tf_idFocusGained(evt);
             }
         });
-        jPanel1.add(tf_phonenumber, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, 210, -1));
+        jPanel1.add(tf_id, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 210, -1));
 
         tf_address.setText("Address");
         tf_address.setToolTipText("");
@@ -227,13 +229,13 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
                 tf_addressFocusGained(evt);
             }
         });
-        jPanel1.add(tf_address, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 10, 210, -1));
+        jPanel1.add(tf_address, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 10, 210, -1));
 
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/location.png"))); // NOI18N
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 0, 30, 40));
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 0, 30, 40));
 
         jLabel8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/user.png"))); // NOI18N
-        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 30, 40));
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 30, 40));
 
         tf_username.setText("Username");
         tf_username.setToolTipText("");
@@ -242,10 +244,22 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
                 tf_usernameFocusGained(evt);
             }
         });
-        jPanel1.add(tf_username, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 10, 210, -1));
+        jPanel1.add(tf_username, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 50, 210, -1));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/lock.png"))); // NOI18N
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 40, 30, 40));
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/id.png"))); // NOI18N
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 30, 40));
+
+        tf_email.setText("Email");
+        tf_email.setToolTipText("");
+        tf_email.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tf_emailFocusGained(evt);
+            }
+        });
+        jPanel1.add(tf_email, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, 210, -1));
+
+        jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/lock.png"))); // NOI18N
+        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 80, 30, 40));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -265,13 +279,13 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
         tf_fullname.setText("");
     }//GEN-LAST:event_tf_fullnameFocusGained
 
-    private void tf_emailFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tf_emailFocusGained
-        tf_email.setText("");
-    }//GEN-LAST:event_tf_emailFocusGained
-
     private void tf_phonenumberFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tf_phonenumberFocusGained
         tf_phonenumber.setText("");
     }//GEN-LAST:event_tf_phonenumberFocusGained
+
+    private void tf_idFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tf_idFocusGained
+        tf_id.setText("");
+    }//GEN-LAST:event_tf_idFocusGained
 
     private void tf_passwordFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tf_passwordFocusGained
         tf_password.setText("");
@@ -282,13 +296,12 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tf_salaryFocusGained
 
     private void bt_addMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bt_addMouseClicked
-        ArrayList<Employee_Model> list = employeeList();
         //make sure all textfield is filled
-        if((!tf_fullname.getText().equals("")) && (!tf_email.getText().equals("")) && (!tf_address.getText().equals("")) && (!tf_phonenumber.getText().equals("")) 
-            && (!tf_salary.getText().equals("")) && (!tf_username.getText().equals("")) && (!tf_password.getText().equals("")) 
-            && (!tf_fullname.getText().equals("Full Name")) && (!tf_email.getText().equals("Email")) && (!tf_address.getText().equals("Address")) 
-            && (!tf_phonenumber.getText().equals("Phone Number")) && (!tf_salary.getText().equals("Salary")) && (!tf_username.getText().equals("Username")) 
-            && (!tf_password.getText().equals("Password"))){
+        if((!tf_fullname.getText().equals("")) && (!tf_phonenumber.getText().equals("")) && (!tf_address.getText().equals("")) && (!tf_id.getText().equals("")) 
+            && (!tf_salary.getText().equals("")) && (!tf_username.getText().equals("")) && (!tf_password.getText().equals("")) && (!tf_email.getText().equals("")) 
+            && (!tf_fullname.getText().equals("Full Name")) && (!tf_phonenumber.getText().equals("Phone Number")) && (!tf_address.getText().equals("Address")) 
+            && (!tf_id.getText().equals("ID")) && (!tf_salary.getText().equals("Salary")) && (!tf_username.getText().equals("Username")) 
+            && (!tf_password.getText().equals("Password")) && (!tf_email.getText().equals("Email"))){
             try{
                 Class.forName("org.postgresql.Driver");
             }catch (ClassNotFoundException ex){
@@ -301,24 +314,24 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
                 // Add new employee account query
                 String account_query = "INSERT INTO public.account(\n" +"	id, username, password)\n" +"	VALUES (?, ?, ?);";
                 PreparedStatement account_pst = con.prepareStatement(account_query);
-                account_pst.setInt(1, list.size());
+                account_pst.setInt(1, Integer.valueOf(tf_id.getText()));
                 account_pst.setString(2, tf_username.getText());
                 account_pst.setString(3, tf_password.getText());
                 account_pst.executeUpdate();
                 JOptionPane.showMessageDialog(null, "Add Account Successfully");
                 PreparedStatement employee_pst = con.prepareStatement(employee_query);
-                employee_pst.setInt(1, list.size());
+                employee_pst.setInt(1, Integer.valueOf(tf_id.getText()));
                 employee_pst.setString(2, cbb_typeofjob.getSelectedItem().toString().toLowerCase());
                 employee_pst.setString(3, tf_fullname.getText());
-                employee_pst.setString(4, tf_email.getText());
-                employee_pst.setString(5, tf_phonenumber.getText());
+                employee_pst.setString(4, tf_phonenumber.getText());
+                employee_pst.setString(5, tf_id.getText());
                 employee_pst.setLong(6, Long.valueOf(tf_salary.getText()));
-                employee_pst.setInt(7, list.size());
+                employee_pst.setInt(7, Integer.valueOf(tf_id.getText()));
                 employee_pst.setString(8, tf_address.getText());
                 employee_pst.executeUpdate();
                 JOptionPane.showMessageDialog(null, "Add Employee Successfully");
             }catch(SQLException ex){
-                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error Something Go Wrong");
             }
             clear_Employees();
             show_Employees();
@@ -336,7 +349,9 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_tf_usernameFocusGained
 
     private void bt_removeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bt_removeMouseClicked
-       int dialogResult = JOptionPane.showConfirmDialog (null, "Would You Like to delete this employee?","Warning",JOptionPane.YES_NO_OPTION);
+       //get selected row 
+        int selected = employee_table.getSelectedRow();
+        int dialogResult = JOptionPane.showConfirmDialog (null, "Would You Like to delete this employee?","Warning",JOptionPane.YES_NO_OPTION);
         if(dialogResult == JOptionPane.YES_OPTION){
             try{
                 Class.forName("org.postgresql.Driver");
@@ -350,15 +365,15 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
                     // delete account query
                     String account_query ="DELETE FROM public.account\n" +"	WHERE id = ?;";
                     PreparedStatement employee_pst = con.prepareStatement(employee_query);
-                    employee_pst.setInt(1, Integer.valueOf( employee_table.getSelectedRow()));
+                    employee_pst.setInt(1, Integer.valueOf(employee_table.getValueAt(selected, 0).toString()));
                     employee_pst.executeUpdate();
                     JOptionPane.showMessageDialog(null, "Delete Employee Successfully");
                     PreparedStatement account_pst = con.prepareStatement(account_query);
-                    account_pst.setInt(1, Integer.valueOf( employee_table.getSelectedRow()));
+                    account_pst.setInt(1, Integer.valueOf(employee_table.getValueAt(selected, 0).toString()));
                     account_pst.executeUpdate();
                     JOptionPane.showMessageDialog(null, "Delete Account Successfully");
             }catch(SQLException ex){
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error Something Go Wrong");
                 }
                 clear_Employees();
                 show_Employees();
@@ -390,22 +405,26 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
                     employee_pst.setLong(6, Long.valueOf(employee_table.getValueAt(selected, 6).toString()));
                     employee_pst.setInt(7, Integer.valueOf(employee_table.getValueAt(selected, 0).toString()));
                     employee_pst.setString(8, employee_table.getValueAt(selected, 3).toString());
-                    employee_pst.setInt(9, selected);
+                    employee_pst.setInt(9, Integer.valueOf(employee_table.getValueAt(selected, 0).toString()));
                     employee_pst.executeUpdate();              
                     JOptionPane.showMessageDialog(null, "Update Employee Successfully");
                     PreparedStatement account_pst = con.prepareStatement(account_query);
                     account_pst.setInt(1, Integer.valueOf(employee_table.getValueAt(selected, 0).toString()));
                     account_pst.setString(2, employee_table.getValueAt(selected, 7).toString());
                     account_pst.setString(3, employee_table.getValueAt(selected, 8).toString());
-                    account_pst.setInt(4, selected);
+                    account_pst.setInt(4, Integer.valueOf(employee_table.getValueAt(selected, 0).toString()));
                     account_pst.executeUpdate();
                     JOptionPane.showMessageDialog(null, "Update Account Successfully");
             }catch(SQLException ex){
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error Something Go Wrong");
                 }
                 clear_Employees();
                 show_Employees();
     }//GEN-LAST:event_bt_updateMouseClicked
+
+    private void tf_emailFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tf_emailFocusGained
+        tf_email.setText("");
+    }//GEN-LAST:event_tf_emailFocusGained
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -422,11 +441,13 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField tf_address;
     private javax.swing.JTextField tf_email;
     private javax.swing.JTextField tf_fullname;
+    private javax.swing.JTextField tf_id;
     private javax.swing.JTextField tf_password;
     private javax.swing.JTextField tf_phonenumber;
     private javax.swing.JTextField tf_salary;
