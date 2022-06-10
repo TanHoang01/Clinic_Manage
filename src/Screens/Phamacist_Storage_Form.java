@@ -126,6 +126,8 @@ public class Phamacist_Storage_Form extends javax.swing.JInternalFrame {
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         medicine_table = new javax.swing.JTable();
+        bt_update = new javax.swing.JButton();
+        bt_remove = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -163,6 +165,12 @@ public class Phamacist_Storage_Form extends javax.swing.JInternalFrame {
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 850, 450));
 
+        bt_update.setText("UPDATE");
+        jPanel1.add(bt_update, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 20, -1, -1));
+
+        bt_remove.setText("REMOVE");
+        jPanel1.add(bt_remove, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, -1, -1));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -193,6 +201,8 @@ public class Phamacist_Storage_Form extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bt_remove;
+    private javax.swing.JButton bt_update;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
