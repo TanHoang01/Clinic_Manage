@@ -43,7 +43,7 @@ public class Doctor_Patient_Form extends javax.swing.JInternalFrame {
             ResultSet rs = stm.executeQuery(query);
             Patient_Model patients;
             while(rs.next()){
-               patients = new Patient_Model(rs.getInt("id"), rs.getString("full_name"),rs.getString("address"),rs.getString("email"),rs.getString("phone_number"),rs.getString("gender"),rs.getInt("age"));
+               patients = new Patient_Model(rs.getInt("patient_id"), rs.getString("patient_full_name"),rs.getString("address"),rs.getString("email"),rs.getString("phone_number"),rs.getString("gender"),rs.getInt("age"));
                patientsList.add(patients);
                }
            } catch(SQLException ex){
@@ -77,12 +77,12 @@ public class Doctor_Patient_Form extends javax.swing.JInternalFrame {
         }
         try{
             Connection con = DriverManager.getConnection(url, unameDB, passDB);
-            String search_query = "select * from patient where full_name like " + search;
+            String search_query = "select * from patient where patient_full_name like " + search;
             Statement stm = con.createStatement();
             ResultSet rs = stm.executeQuery(search_query);
             Patient_Model patients;
             while(rs.next()){
-               patients = new Patient_Model(rs.getInt("id"), rs.getString("full_name"),rs.getString("address"),rs.getString("email"),rs.getString("phone_number"),rs.getString("gender"),rs.getInt("age"));
+               patients = new Patient_Model(rs.getInt("patient_id"), rs.getString("patient_full_name"),rs.getString("address"),rs.getString("email"),rs.getString("phone_number"),rs.getString("gender"),rs.getInt("age"));
                searchsList.add(patients);
                }
            } catch(SQLException ex){

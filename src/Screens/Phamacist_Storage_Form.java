@@ -166,9 +166,19 @@ public class Phamacist_Storage_Form extends javax.swing.JInternalFrame {
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 850, 450));
 
         bt_update.setText("UPDATE");
+        bt_update.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bt_updateMouseClicked(evt);
+            }
+        });
         jPanel1.add(bt_update, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 20, -1, -1));
 
         bt_remove.setText("REMOVE");
+        bt_remove.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bt_removeMouseClicked(evt);
+            }
+        });
         jPanel1.add(bt_remove, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 20, -1, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -198,6 +208,64 @@ public class Phamacist_Storage_Form extends javax.swing.JInternalFrame {
             JOptionPane.showMessageDialog(null, "Please fill all search space");
         }
     }//GEN-LAST:event_jLabel1MouseClicked
+
+    private void bt_removeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bt_removeMouseClicked
+        //get selected row 
+        int selected = medicine_table.getSelectedRow();
+        int dialogResult = JOptionPane.showConfirmDialog (null, "Would You Like to delete this patient?","Warning",JOptionPane.YES_NO_OPTION);
+        if(dialogResult == JOptionPane.YES_OPTION){
+            try{
+                Class.forName("org.postgresql.Driver");
+            }catch (ClassNotFoundException ex){
+                ex.printStackTrace();
+            }
+            try{
+                    Connection con = DriverManager.getConnection(url, unameDB, passDB);
+                    // delete employee query
+                    String medicine_query ="DELETE FROM public.medicine\n" +"	WHERE id = ?;";
+                    PreparedStatement medicine_pst = con.prepareStatement(medicine_query);
+                    medicine_pst.setInt(1, Integer.valueOf(medicine_table.getValueAt(selected, 0).toString()));
+                    medicine_pst.executeUpdate();
+                    JOptionPane.showMessageDialog(null, "Delete Medicine Successfully");
+            }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(null, "Error Something Go Wrong");
+                }
+                clear_Medicines();
+                show_Medicines();
+        }else{
+            
+        }
+    }//GEN-LAST:event_bt_removeMouseClicked
+
+    private void bt_updateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bt_updateMouseClicked
+        //get selected row 
+        int selected = medicine_table.getSelectedRow();
+         try{
+                Class.forName("org.postgresql.Driver");
+            }catch (ClassNotFoundException ex){
+                ex.printStackTrace();
+            }
+            try{
+                    Connection con = DriverManager.getConnection(url, unameDB, passDB);             
+                    // update account query
+                    String medicine_query ="UPDATE public.medicine\n" +"	SET id=?, name=?, type_of_medicine=?, producer=?, price_per_unit=?, amount=?\n" +"	WHERE id = ?;";
+                    PreparedStatement medicine_pst = con.prepareStatement(medicine_query);
+                    medicine_pst.setInt(1, Integer.valueOf(medicine_table.getValueAt(selected, 0).toString()));
+                    medicine_pst.setString(2, medicine_table.getValueAt(selected, 1).toString());
+                    medicine_pst.setString(3,medicine_table.getValueAt(selected, 2).toString());
+                    medicine_pst.setString(4, medicine_table.getValueAt(selected, 3).toString());
+                    medicine_pst.setLong(5, Long.valueOf(medicine_table.getValueAt(selected, 4).toString()));
+                    medicine_pst.setInt(6, Integer.valueOf(medicine_table.getValueAt(selected, 5).toString()));
+                    medicine_pst.setInt(7, Integer.valueOf(medicine_table.getValueAt(selected, 0).toString()));
+                    medicine_pst.executeUpdate();              
+                    JOptionPane.showMessageDialog(null, "Update Medicine Successfully");
+            }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(null, "Error Something Go Wrong");
+                    ex.printStackTrace();
+                }
+                clear_Medicines();
+                show_Medicines();
+    }//GEN-LAST:event_bt_updateMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

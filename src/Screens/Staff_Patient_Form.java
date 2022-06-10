@@ -43,7 +43,7 @@ public class Staff_Patient_Form extends javax.swing.JInternalFrame {
             ResultSet rs = stm.executeQuery(query);
             Patient_Model patients;
             while(rs.next()){
-               patients = new Patient_Model(rs.getInt("id"), rs.getString("full_name"),rs.getString("address"),rs.getString("email"),rs.getString("phone_number"),rs.getString("gender"),rs.getInt("age"));
+               patients = new Patient_Model(rs.getInt("patient_id"), rs.getString("patient_full_name"),rs.getString("address"),rs.getString("email"),rs.getString("phone_number"),rs.getString("gender"),rs.getInt("age"));
                patientsList.add(patients);
                }
            } catch(SQLException ex){
@@ -261,7 +261,7 @@ public class Staff_Patient_Form extends javax.swing.JInternalFrame {
             try{
                 Connection con = DriverManager.getConnection(url, unameDB, passDB);             
                 // Add new patient query
-                String patient_query = "INSERT INTO public.patient(\n" +"	id, full_name, address, email, phone_number, gender, age)\n" +"	VALUES (?, ?, ?, ?, ?, ?, ?);";
+                String patient_query = "INSERT INTO public.patient(\n" +"	patient_id, patient_full_name, address, email, phone_number, gender, age)\n" +"	VALUES (?, ?, ?, ?, ?, ?, ?);";
                 PreparedStatement patient_pst = con.prepareStatement(patient_query);
                 patient_pst.setInt(1, Integer.valueOf(tf_id.getText()));
                 patient_pst.setString(2, tf_fullname.getText());
@@ -323,7 +323,7 @@ public class Staff_Patient_Form extends javax.swing.JInternalFrame {
             try{
                     Connection con = DriverManager.getConnection(url, unameDB, passDB);
                     // delete employee query
-                    String patient_query ="DELETE FROM public.patient\n" +"	WHERE id = ?;";
+                    String patient_query ="DELETE FROM public.patient\n" +"	WHERE patient_id = ?;";
                     PreparedStatement patient_pst = con.prepareStatement(patient_query);
                     patient_pst.setInt(1, Integer.valueOf(patient_table.getValueAt(selected, 0).toString()));
                     patient_pst.executeUpdate();
@@ -349,7 +349,7 @@ public class Staff_Patient_Form extends javax.swing.JInternalFrame {
             try{
                     Connection con = DriverManager.getConnection(url, unameDB, passDB);             
                     // update account query
-                    String patient_query ="UPDATE public.patient\n" +"	SET id=?, full_name=?, address=?, email=?, phone_number=?, gender=?, age=?\n" +"	WHERE id = ?;";
+                    String patient_query ="UPDATE public.patient\n" +"	SET patient_id=?, patient_full_name=?, address=?, email=?, phone_number=?, gender=?, age=?\n" +"	WHERE patient_id = ?;";
                     PreparedStatement patient_pst = con.prepareStatement(patient_query);
                     patient_pst.setInt(1, Integer.valueOf(patient_table.getValueAt(selected, 0).toString()));
                     patient_pst.setString(2, patient_table.getValueAt(selected, 1).toString());

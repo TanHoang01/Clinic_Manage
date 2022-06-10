@@ -11,14 +11,13 @@ import java.util.Date;
  * @author Tan Hoang-Pride
  */
 public class Import_Model {
-    private int id,medicineid,amount;
+    private int id,amount;
     private String medicinename;
     private long priceperunit,totalprice;
     private Date date;
     
-    public Import_Model(int id, int medicineid, String medicinename, long priceperunit,long totalprice, int amount, Date date){
+    public Import_Model(int id,Date date,long totalprice, String medicinename, long priceperunit, int amount ){
         this.id = id;
-        this.medicineid = medicineid;
         this.medicinename = medicinename;
         this.priceperunit = priceperunit;
         this.totalprice = totalprice;
@@ -26,9 +25,6 @@ public class Import_Model {
         this.date = date;
     }    
     public int getid() {
-        return id;
-    }
-    public int getmedicineid() {
         return id;
     }
     public String getmedicinename() {
