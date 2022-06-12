@@ -323,6 +323,7 @@ public class Doctor_Diagnosis_Form extends javax.swing.JInternalFrame {
         });
         jPanel1.add(bt_clear, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 490, 80, -1));
 
+        tp_diagnosis.setEditable(false);
         jScrollPane2.setViewportView(tp_diagnosis);
 
         jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 140, 250, 340));

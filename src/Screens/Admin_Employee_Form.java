@@ -77,7 +77,27 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
         DefaultTableModel model = (DefaultTableModel)employee_table.getModel();
         model.setRowCount(0);
     }
-
+    public int countID(){
+        int count = 0;
+        String query = "select * from salary_payment";
+        try{
+            Class.forName("org.postgresql.Driver");
+        }catch (ClassNotFoundException ex){
+            ex.printStackTrace();
+        }
+        try{
+            Connection con = DriverManager.getConnection(url, unameDB, passDB);
+            Statement stm = con.createStatement();
+            ResultSet rs = stm.executeQuery(query);
+            Patient_Model patients;
+            while(rs.next()){
+               count = count + 1;
+               }
+           } catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        return count;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -111,6 +131,7 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
         jLabel1 = new javax.swing.JLabel();
         tf_email = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
+        bt_pay_salary = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -260,6 +281,15 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
 
         jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/lock.png"))); // NOI18N
         jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 80, 30, 40));
+
+        bt_pay_salary.setBackground(new java.awt.Color(255, 255, 255));
+        bt_pay_salary.setText("Pay Salary");
+        bt_pay_salary.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bt_pay_salaryMouseClicked(evt);
+            }
+        });
+        jPanel1.add(bt_pay_salary, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 130, 90, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -426,9 +456,39 @@ public class Admin_Employee_Form extends javax.swing.JInternalFrame {
         tf_email.setText("");
     }//GEN-LAST:event_tf_emailFocusGained
 
+    private void bt_pay_salaryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bt_pay_salaryMouseClicked
+        java.util.Date utilDate = new java.util.Date();
+        java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+        if((!tf_id.getText().equals("")) && (!tf_id.getText().equals("ID"))){
+           try{
+                Class.forName("org.postgresql.Driver");
+            }catch (ClassNotFoundException ex){
+                ex.printStackTrace();
+            }
+            try{
+                Connection con = DriverManager.getConnection(url, unameDB, passDB);
+                String salary_query = "INSERT INTO public.salary_payment(\n" +"	id, date, employee_id)\n" +"	VALUES (?, ?, ?);";
+                PreparedStatement salary_pst = con.prepareStatement(salary_query);
+                salary_pst.setInt(1, countID() + 1);
+                salary_pst.setDate(2, sqlDate);
+                salary_pst.setInt(3, Integer.valueOf(tf_id.getText()));
+                salary_pst.executeUpdate();
+                JOptionPane.showMessageDialog(null, "Pay Salary Successfully");
+            }catch(SQLException ex){
+                JOptionPane.showMessageDialog(null, "Error Something Go Wrong");
+                ex.printStackTrace();
+            }
+            clear_Employees();
+            show_Employees();
+        }else{
+            JOptionPane.showMessageDialog(null, "Please fill all blank space");
+        } 
+    }//GEN-LAST:event_bt_pay_salaryMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bt_add;
+    private javax.swing.JButton bt_pay_salary;
     private javax.swing.JButton bt_remove;
     private javax.swing.JButton bt_update;
     private javax.swing.JComboBox<String> cbb_typeofjob;

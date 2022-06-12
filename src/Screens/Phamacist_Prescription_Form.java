@@ -3,20 +3,130 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
  */
 package Screens;
-
+import Model.*;
+import java.awt.Font;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
+import java.sql.Timestamp;
+import java.sql.Statement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.PreparedStatement;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author Tan Hoang-Pride
  */
 public class Phamacist_Prescription_Form extends javax.swing.JInternalFrame {
-
+    static String url = "jdbc:postgresql://localhost:5432/clinic_manage";
+    static String unameDB = "postgres";
+    static String passDB = "123456";
     /**
      * Creates new form Phamacist_Prescription_Form
      */
     public Phamacist_Prescription_Form() {
         initComponents();
+        show_Medicines();
     }
-
+     public ArrayList<Medicine_Model> medicineList(){
+        String query = "select * from medicine";
+        ArrayList<Medicine_Model> medicinesList = new ArrayList<>();
+        try{
+            Class.forName("org.postgresql.Driver");
+        }catch (ClassNotFoundException ex){
+            ex.printStackTrace();
+        }
+        try{
+            Connection con = DriverManager.getConnection(url, unameDB, passDB);
+            Statement stm = con.createStatement();
+            ResultSet rs = stm.executeQuery(query);
+            Medicine_Model medicines;
+            while(rs.next()){
+               medicines = new Medicine_Model(rs.getInt("id"), rs.getString("name"),rs.getString("type_of_medicine"),rs.getString("producer"),rs.getLong("price_per_unit"),rs.getInt("amount"));
+               medicinesList.add(medicines);
+               }
+           } catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        return medicinesList;
+    }
+    
+    public void show_Medicines(){
+        ArrayList<Medicine_Model> list = medicineList();
+        DefaultTableModel model = (DefaultTableModel) medicine_table.getModel();
+        Object[] row = new Object[3];
+        for(int i = 0; i < list.size();i++){
+            row[0] = list.get(i).getid();
+            row[1] = list.get(i).getname();
+            row[2] = list.get(i).getpriceperunit();
+            model.addRow(row);
+        }
+    }
+     public Medicine_Model draftMedicine(){
+        int selected = medicine_table.getSelectedRow();
+        Medicine_Model medicines;
+        medicines = new Medicine_Model(Integer.valueOf(medicine_table.getValueAt(selected, 0).toString()),medicine_table.getValueAt(selected, 1).toString(),"",
+                "",Long.valueOf(medicine_table.getValueAt(selected, 2).toString()),0);
+        return medicines;
+    }
+    
+    public void show_draftMedicine(){
+        Medicine_Model medicine = draftMedicine();
+        DefaultTableModel model = (DefaultTableModel)draft_medicine_table.getModel();
+        Object[] row = new Object[4];
+        row[0] = medicine.getid();
+        row[1] = medicine.getname();
+        row[2] = medicine.getpriceperunit();
+        row[3] = tf_amount.getText();
+        model.addRow(row);
+    }
+    public int getAmount(int id){
+        int amount = 0;
+        String query = "SELECT amount\n" +"	FROM public.medicine WHERE id = " + id + ";";
+        try{
+            Class.forName("org.postgresql.Driver");
+        }catch (ClassNotFoundException ex){
+            ex.printStackTrace();
+        }
+        try{
+            Connection con = DriverManager.getConnection(url, unameDB, passDB);
+            Statement stm = con.createStatement();
+            ResultSet rs = stm.executeQuery(query);
+            while(rs.next()){
+             amount = rs.getInt("amount");
+            }
+           } catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        return amount;
+    }
+    public int countPrescription(){
+        int count = 0;
+        String query = "select * from prescription_bill";
+        try{
+            Class.forName("org.postgresql.Driver");
+        }catch (ClassNotFoundException ex){
+            ex.printStackTrace();
+        }
+        try{
+            Connection con = DriverManager.getConnection(url, unameDB, passDB);
+            Statement stm = con.createStatement();
+            ResultSet rs = stm.executeQuery(query);
+            Patient_Model patients;
+            while(rs.next()){
+               count = count + 1;
+               }
+           } catch(SQLException ex){
+            ex.printStackTrace();
+        }
+        return count;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -27,6 +137,22 @@ public class Phamacist_Prescription_Form extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        tf_phamacistname = new javax.swing.JTextField();
+        tf_patientname = new javax.swing.JTextField();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tp_prescription = new javax.swing.JTextPane();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        draft_medicine_table = new javax.swing.JTable();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        medicine_table = new javax.swing.JTable();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        tf_amount = new javax.swing.JTextField();
+        bt_add_medicine = new javax.swing.JButton();
+        bt_remove_medicine = new javax.swing.JButton();
+        bt_finish = new javax.swing.JButton();
+        bt_clear = new javax.swing.JButton();
+        bt_print = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -36,22 +162,254 @@ public class Phamacist_Prescription_Form extends javax.swing.JInternalFrame {
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
+        tf_phamacistname.setText("Phamacist Name");
+        tf_phamacistname.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tf_phamacistnameFocusGained(evt);
+            }
+        });
+        jPanel1.add(tf_phamacistname, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 50, 200, -1));
+
+        tf_patientname.setText("Patient Name");
+        tf_patientname.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tf_patientnameFocusGained(evt);
+            }
+        });
+        jPanel1.add(tf_patientname, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 10, 200, -1));
+
+        tp_prescription.setEditable(false);
+        jScrollPane3.setViewportView(tp_prescription);
+
+        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 120, 250, 370));
+
+        draft_medicine_table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "Medicine Name", "Price Per Unit", "Amount"
+            }
+        ));
+        jScrollPane4.setViewportView(draft_medicine_table);
+
+        jPanel1.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 10, 290, 510));
+
+        medicine_table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "ID", "Medicine Name", "Price Per Unit"
+            }
+        ));
+        jScrollPane5.setViewportView(medicine_table);
+
+        jPanel1.add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 10, 290, 510));
+
+        jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/user.png"))); // NOI18N
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 30, 40));
+
+        jLabel5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/user.png"))); // NOI18N
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 0, 30, 40));
+
+        tf_amount.setText("Amount");
+        tf_amount.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tf_amountFocusGained(evt);
+            }
+        });
+        jPanel1.add(tf_amount, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 90, 60, -1));
+
+        bt_add_medicine.setText("ADD");
+        bt_add_medicine.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bt_add_medicineMouseClicked(evt);
+            }
+        });
+        jPanel1.add(bt_add_medicine, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 90, 80, -1));
+
+        bt_remove_medicine.setText("REMOVE");
+        bt_remove_medicine.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bt_remove_medicineMouseClicked(evt);
+            }
+        });
+        jPanel1.add(bt_remove_medicine, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 90, -1, -1));
+
+        bt_finish.setText("Finish");
+        bt_finish.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bt_finishMouseClicked(evt);
+            }
+        });
+        jPanel1.add(bt_finish, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 500, 80, -1));
+
+        bt_clear.setText("Clear");
+        bt_clear.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bt_clearMouseClicked(evt);
+            }
+        });
+        jPanel1.add(bt_clear, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 500, 80, -1));
+
+        bt_print.setText("Print");
+        bt_print.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                bt_printMouseClicked(evt);
+            }
+        });
+        jPanel1.add(bt_print, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 500, 80, -1));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 868, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 535, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void tf_amountFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tf_amountFocusGained
+        tf_amount.setText("");
+    }//GEN-LAST:event_tf_amountFocusGained
+
+    private void bt_add_medicineMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bt_add_medicineMouseClicked
+        if(!tf_amount.getText().equals("") && !tf_amount.getText().equals("Amount")){
+            show_draftMedicine();
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Please Fill Amount");
+        }
+    }//GEN-LAST:event_bt_add_medicineMouseClicked
+
+    private void bt_remove_medicineMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bt_remove_medicineMouseClicked
+        ((DefaultTableModel)draft_medicine_table.getModel()).removeRow(draft_medicine_table.getSelectedRow());
+    }//GEN-LAST:event_bt_remove_medicineMouseClicked
+
+    private void tf_patientnameFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tf_patientnameFocusGained
+        tf_patientname.setText("");
+    }//GEN-LAST:event_tf_patientnameFocusGained
+
+    private void tf_phamacistnameFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tf_phamacistnameFocusGained
+        tf_phamacistname.setText("");
+    }//GEN-LAST:event_tf_phamacistnameFocusGained
+
+    private void bt_finishMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bt_finishMouseClicked
+        java.util.Date utilDate = new java.util.Date();
+        tp_prescription.setText("                         "+"M Y C L I N I C\n");
+        tp_prescription.setText(tp_prescription.getText()+"                        "+"Prescription Bill\n");
+        tp_prescription.setText(tp_prescription.getText()+"           "+utilDate+"\n"+" "+"\n");
+        tp_prescription.setText(tp_prescription.getText()+"Patient Name: "+tf_patientname.getText()+"\n"+" "+"\n");
+        tp_prescription.setText(tp_prescription.getText()+"Phamacist Name: "+tf_phamacistname.getText()+"\n"+" "+"\n");
+        tp_prescription.setText(tp_prescription.getText()+"Medicine List: \n");
+        DefaultTableModel medicine_model = (DefaultTableModel)draft_medicine_table.getModel();
+        for(int i = 0;i<draft_medicine_table.getRowCount();i++){
+            String medicine = medicine_model.getValueAt(i, 1).toString() + " -  " + "Amount: " + medicine_model.getValueAt(i, 3).toString() 
+                    + " -  " + "Price Per Unit: " + medicine_model.getValueAt(i, 2).toString();
+            tp_prescription.setText(tp_prescription.getText()+(i+1)+". " + medicine +"\n");
+        }
+         tp_prescription.setText(tp_prescription.getText()+" "+"\n");
+        long total = 0;
+        for(int i = 0;i<draft_medicine_table.getRowCount();i++){
+            total = total + (Integer.valueOf(draft_medicine_table.getValueAt(i, 2).toString())*Long.valueOf(draft_medicine_table.getValueAt(i, 3).toString()));
+        }
+        tp_prescription.setText(tp_prescription.getText()+"                                      "+"Total Price: "+total+"\n"+" "+"\n");
+        tp_prescription.setText(tp_prescription.getText()+"                        "+"Thank You <3");
+    }//GEN-LAST:event_bt_finishMouseClicked
+
+    private void bt_clearMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bt_clearMouseClicked
+        tp_prescription.setText(null);
+    }//GEN-LAST:event_bt_clearMouseClicked
+
+    private void bt_printMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_bt_printMouseClicked
+        for(int i = 0; i < draft_medicine_table.getRowCount();i++){
+                try{
+                Class.forName("org.postgresql.Driver");
+                }catch (ClassNotFoundException ex){
+                    ex.printStackTrace();
+                }
+                try{
+                    Connection con = DriverManager.getConnection(url, unameDB, passDB);             
+                    // Add new patient query
+                    String medicine_query = "UPDATE public.medicine\n" +"	SET amount=?\n" +"	WHERE id = ?;";
+                    PreparedStatement medicine_pst = con.prepareStatement(medicine_query);
+                    medicine_pst.setInt(1, getAmount(Integer.valueOf(draft_medicine_table.getValueAt(i, 0).toString())) 
+                            - Integer.valueOf(draft_medicine_table.getValueAt(i, 3).toString()));
+                    medicine_pst.setInt(2, Integer.valueOf(draft_medicine_table.getValueAt(i, 0).toString()));
+                    medicine_pst.executeUpdate();
+                    String prescription_query = "INSERT INTO public.prescription_bill_detail(\n" +"	prescription_id, medicine_id, amount)\n" +"	VALUES (?, ?, ?);";
+                    PreparedStatement prescription_pst = con.prepareStatement(prescription_query);
+                    prescription_pst.setInt(1, countPrescription() + 1);
+                    prescription_pst.setInt(2, Integer.valueOf(draft_medicine_table.getValueAt(i, 0).toString()));
+                    prescription_pst.setInt(3, Integer.valueOf(draft_medicine_table.getValueAt(i, 3).toString()));
+                    prescription_pst.executeUpdate();
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(null, "Error Something Go Wrong");
+                    ex.printStackTrace();
+                } 
+        }           
+             try{
+                Class.forName("org.postgresql.Driver");
+                }catch (ClassNotFoundException ex){
+                    ex.printStackTrace();
+                }
+                try{
+                    Connection con = DriverManager.getConnection(url, unameDB, passDB);             
+                    // Add new patient query
+                    String prescription_query = "INSERT INTO public.prescription_bill(\n" +"	id, date_time, total_price, patient_name, created_by)\n" +"	VALUES (?, ?, ?, ?, ?);";
+                    PreparedStatement prescription_pst = con.prepareStatement(prescription_query);
+                    prescription_pst.setInt(1, countPrescription() + 1);                 
+                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                    prescription_pst.setTimestamp(2, timestamp);
+                    long total = 0;
+                    for(int i = 0;i<draft_medicine_table.getRowCount();i++){
+                        total = total + (Integer.valueOf(draft_medicine_table.getValueAt(i, 2).toString())*Long.valueOf(draft_medicine_table.getValueAt(i, 3).toString()));
+                    }
+                    prescription_pst.setLong(3, total);
+                    prescription_pst.setString(4, tf_patientname.getText());
+                    prescription_pst.setString(5, tf_phamacistname.getText());
+                    prescription_pst.executeUpdate();
+                }catch(SQLException ex){
+                    JOptionPane.showMessageDialog(null, "Error Something Go Wrong");
+                    ex.printStackTrace();
+                } 
+        JOptionPane.showMessageDialog(null, "Make Prescrition Finish");
+        try{
+            boolean print = tp_prescription.print();
+            if(print){
+                JOptionPane.showMessageDialog(null, "Print Complete");
+            }else{
+                JOptionPane.showMessageDialog(null, "Print Uncomplete");
+            }
+        }catch(PrinterException e){
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_bt_printMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bt_add_medicine;
+    private javax.swing.JButton bt_clear;
+    private javax.swing.JButton bt_finish;
+    private javax.swing.JButton bt_print;
+    private javax.swing.JButton bt_remove_medicine;
+    private javax.swing.JTable draft_medicine_table;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JTable medicine_table;
+    private javax.swing.JTextField tf_amount;
+    private javax.swing.JTextField tf_patientname;
+    private javax.swing.JTextField tf_phamacistname;
+    private javax.swing.JTextPane tp_prescription;
     // End of variables declaration//GEN-END:variables
 }
