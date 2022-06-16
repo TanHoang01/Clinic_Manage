@@ -4,6 +4,7 @@
  */
 package Screens;
 import Model.*;
+import java.awt.print.PrinterException;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -207,8 +208,6 @@ public class Phamacist_Import_Form extends javax.swing.JInternalFrame {
         tf_import = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         draft_table = new javax.swing.JTable();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
         bt_add = new javax.swing.JButton();
         bt_remove = new javax.swing.JButton();
         rbt_old = new javax.swing.JRadioButton();
@@ -220,6 +219,10 @@ public class Phamacist_Import_Form extends javax.swing.JInternalFrame {
         jLabel8 = new javax.swing.JLabel();
         tf_name = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
+        tf_clear = new javax.swing.JButton();
+        tf_finish = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tp_import = new javax.swing.JTextPane();
 
         setClosable(true);
         setIconifiable(true);
@@ -269,13 +272,13 @@ public class Phamacist_Import_Form extends javax.swing.JInternalFrame {
         });
         jPanel1.add(tf_quantity, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 20, 220, -1));
 
-        tf_import.setText("Import");
+        tf_import.setText("Print");
         tf_import.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tf_importMouseClicked(evt);
             }
         });
-        jPanel1.add(tf_import, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 490, 80, -1));
+        jPanel1.add(tf_import, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 490, 80, -1));
 
         draft_table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -288,12 +291,6 @@ public class Phamacist_Import_Form extends javax.swing.JInternalFrame {
         jScrollPane1.setViewportView(draft_table);
 
         jPanel1.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 140, 560, 370));
-
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane2.setViewportView(jTextArea1);
-
-        jPanel1.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 140, 270, 340));
 
         bt_add.setText("ADD");
         bt_add.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -344,6 +341,26 @@ public class Phamacist_Import_Form extends javax.swing.JInternalFrame {
 
         jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Screens/icon/id.png"))); // NOI18N
         jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 30, 40));
+
+        tf_clear.setText("Clear");
+        tf_clear.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tf_clearMouseClicked(evt);
+            }
+        });
+        jPanel1.add(tf_clear, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 490, 80, -1));
+
+        tf_finish.setText("Finish");
+        tf_finish.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tf_finishMouseClicked(evt);
+            }
+        });
+        jPanel1.add(tf_finish, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 490, 80, -1));
+
+        jScrollPane3.setViewportView(tp_import);
+
+        jPanel1.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 140, 270, 340));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -489,7 +506,42 @@ public class Phamacist_Import_Form extends javax.swing.JInternalFrame {
                     ex.printStackTrace();
                 } 
         JOptionPane.showMessageDialog(null, "Import Finish");
+        try{
+            boolean print = tp_import.print();
+            if(print){
+                JOptionPane.showMessageDialog(null, "Print Complete");
+            }else{
+                JOptionPane.showMessageDialog(null, "Print Uncomplete");
+            }
+        }catch(PrinterException e){
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_tf_importMouseClicked
+
+    private void tf_clearMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tf_clearMouseClicked
+        tp_import.setText(null);
+    }//GEN-LAST:event_tf_clearMouseClicked
+
+    private void tf_finishMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tf_finishMouseClicked
+        java.util.Date utilDate = new java.util.Date();
+        tp_import.setText("                            "+"M Y C L I N I C\n");
+        tp_import.setText(tp_import.getText()+"                               "+"Import Bill\n");
+        tp_import.setText(tp_import.getText()+"               "+utilDate+"\n"+" "+"\n");
+        tp_import.setText(tp_import.getText()+"Import Products List: \n");
+        DefaultTableModel medicine_model = (DefaultTableModel)draft_table.getModel();
+        for(int i = 0;i<draft_table.getRowCount();i++){
+            String medicine = medicine_model.getValueAt(i, 1).toString() + " -  " + "Amount: " + medicine_model.getValueAt(i, 4).toString() 
+                    + " -  " + "Price Per Unit: " + medicine_model.getValueAt(i, 5).toString();
+            tp_import.setText(tp_import.getText()+(i+1)+". " + medicine +"\n");
+        }
+         tp_import.setText(tp_import.getText()+" "+"\n");
+        long total = 0;
+        for(int i = 0;i<draft_table.getRowCount();i++){
+            total = total + (Integer.valueOf(draft_table.getValueAt(i, 4).toString())*Long.valueOf(draft_table.getValueAt(i, 5).toString()));
+        }
+        tp_import.setText(tp_import.getText()+"                                        "+"Total Price: "+total+"\n"+" "+"\n");
+        tp_import.setText(tp_import.getText()+"                                        "+"Phamarcist Sign");                                    
+    }//GEN-LAST:event_tf_finishMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -505,10 +557,11 @@ public class Phamacist_Import_Form extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JRadioButton rbt_new;
     private javax.swing.JRadioButton rbt_old;
+    private javax.swing.JButton tf_clear;
+    private javax.swing.JButton tf_finish;
     private javax.swing.JButton tf_import;
     private javax.swing.JTextField tf_medicine_id;
     private javax.swing.JTextField tf_name;
@@ -516,5 +569,6 @@ public class Phamacist_Import_Form extends javax.swing.JInternalFrame {
     private javax.swing.JTextField tf_producer;
     private javax.swing.JTextField tf_quantity;
     private javax.swing.JTextField tf_type;
+    private javax.swing.JTextPane tp_import;
     // End of variables declaration//GEN-END:variables
 }
