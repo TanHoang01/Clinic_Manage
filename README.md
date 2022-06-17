@@ -6,7 +6,7 @@
 - Tải PostgresSQL tại https://www.postgresql.org/download/ (nếu chưa cài đặt).
 - Tạo password truy cập csdl là 123456.
 - Chọn Tools -> Query Tool
-- Excute những query sau:
+- Execute những query sau:
 ```sql
 CREATE DATABASE clinic_manage
     WITH
