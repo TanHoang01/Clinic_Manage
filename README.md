@@ -1,5 +1,6 @@
 # Clinic_Manage
 - Đây là source code đồ án môn học Ngôn ngữ lập trình Java - SE330.M21.PMCL.
+- Đề tài "Xây dựng phần mềm quản lý phòng mạch tư" trên môi trường Apache NetBeans.
 - Sử dụng PostgreSQL để lưu trữ cơ sở dữ liệu. 
 # Hướng dẫn cài đặt CSDL
 - Tải PostgresSQL tại https://www.postgresql.org/download/ (nếu chưa cài đặt).
